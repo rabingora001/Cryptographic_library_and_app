@@ -39,7 +39,7 @@ public class EllipticCurveCryptography {
             DashBoardPage.textArea.setText("Private Key: " + s.toString() + 
             								"\nPublic Key X : " + v.getX().toString() +
             								"\nPublic Key Y : " + v.getY().toString());
-            DashBoardPage.infoLabel.setText("Your public key file has been saved in your current project folder as: "
+            DashBoardPage.infoLabel.setText("Success!! Your public-key file has been saved in your current project folder as: "
                      + "public_key_file_password=" + password + "\n");
         } catch (IOException e) {
             e.printStackTrace();
@@ -163,8 +163,8 @@ public class EllipticCurveCryptography {
 
         //accept if, and only if, t’ = t
         if (Arrays.equals(tPrime, T)) {
-        	DashBoardPage.infoLabel.setText("Your " + fileLocation + " has been decrypted form a provided passphrase.");
-            DashBoardPage.textArea.setText("File decrytped as: " + (bytesToHex(m)));
+        	DashBoardPage.infoLabel.setText("Success!! Your " + fileLocation + " has been decrypted form a provided passphrase.");
+            DashBoardPage.textArea.setText("File decrytped: " + (bytesToHex(m)));
         } else { 
         	DashBoardPage.infoLabel.setText("Incorrect passphrase!! Please use the same passphrase while creating elliptic public key file."); 
         }

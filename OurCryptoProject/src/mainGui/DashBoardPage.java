@@ -212,20 +212,22 @@ public class DashBoardPage extends JFrame {
 				//clear everything before performing action
 				clearResultLines();
 				
+				infoLabel.setText("choose a file to hash.");
 				//then perform the actions
 				FileDialog filedialog = new FileDialog(new JFrame(), "Choose a file to hash", FileDialog.LOAD);
 				filedialog.setVisible(true);
+				
 				String filename = filedialog.getFile();
 				
 				if (filename == null) {
-					textArea.setText("you did not choose any file!!!");
+					infoLabel.setText("you did not choose any file!!!");
 				} else {
 					Path path = Paths.get(filedialog.getDirectory() + filedialog.getFile());
 					try {
 						byte[] data = Files.readAllBytes(path);
 						String fileHashResult = KMACXOF256.getCryptographicHash("".getBytes(), (new String(data)).getBytes(),
 								512, "D".getBytes());
-						String info = "Your file \"" + filedialog.getFile() + "\" hashed to:" ;
+						String info = "Success!! Your file \"" + filedialog.getFile() + "\" hashed to:" ;
 						
 						//set the info Jlabel text
 						infoLabel.setText(info);
@@ -273,11 +275,12 @@ public class DashBoardPage extends JFrame {
 				
 				//then do the remaining process
 				String passphrase = encryptPassphraseTF.getText().toString();
+				infoLabel.setText("choose a file to encrypt with the provided passphrase.");
 				//file loader
 				FileDialog fileDialog = new FileDialog(new JFrame(), "choose a file to encrypt", FileDialog.LOAD);
 				fileDialog.setVisible(true);
 				if (fileDialog.getFile() ==  null) {
-					textArea.setText("you did not choose any file to encrypt!!");
+					infoLabel.setText("you did not choose any file to encrypt!!");
 				} else {
 					try {
 						//KMACXOF256.encryptFile(fileDialog, passphrase);
@@ -291,7 +294,7 @@ public class DashBoardPage extends JFrame {
 			            outputStream.write(KMACXOF256.getOutputContents(message, pw));
 				        
 						//set the info jlabel message
-						String info = "your file \"" + fileDialog.getFile() + "\" has been encrypted to:" ;
+						String info = "success!! Your file \"" + fileDialog.getFile() + "\" has been encrypted to:" ;
 						infoLabel.setText(info);
 				        
 				        //set the JtextArea.
@@ -318,15 +321,16 @@ public class DashBoardPage extends JFrame {
 				
 				//then do the remaining stuff.
 				String passphrase = decryptPassphraseTF.getText().toString();
-				FileDialog fileDialog = new FileDialog(new JFrame(), "choose a .cryptogram file to decrypt", FileDialog.LOAD);
+				infoLabel.setText("Choose a .Cryptogram file to decrypt");
+				FileDialog fileDialog = new FileDialog(new JFrame(), "Choose a .Cryptogram file to decrypt", FileDialog.LOAD);
 				fileDialog.setVisible(true);
 				
 				
 				String fileName = fileDialog.getFile();
 				if (fileName == null) {
-					textArea.setText("you did not choose any cryptogram fiel!!");
+					infoLabel.setText("You did not choose any Cryptogram file!!");
 				} else if (!fileName.endsWith(".cryptogram")) {
-					textArea.setText("The file you chose is not .cryptogram file");
+					infoLabel.setText("The file you chose is not .Cryptogram file");
 				} else {
 					try {
 						 //KMACXOF256.decryptFile(fileDialog, passphrase);
@@ -340,12 +344,12 @@ public class DashBoardPage extends JFrame {
 				        
 				        if (result.tPrimeEqualsT) {
 				        	//set the inforLabel text
-				        	String info = "your file \"" + fileDialog.getFile() + "\" has been decrypted to:" ;
+				        	String info = "success!! Your file \"" + fileDialog.getFile() + "\" has been decrypted to:" ;
 							infoLabel.setText(info);
 							//set the textArea text
 				            textArea.setText(KMACXOF256.convertBytesToHex(result.m));
 				        } else {
-				            textArea.setText("Passphrase did not match match. please match the passphrase to perform the decryption operation!!");
+				            infoLabel.setText("Passphrase did not match match. please match the passphrase to perform the decryption operation!!");
 				        }
 						 
 					} catch (IOException e1) {
@@ -369,6 +373,7 @@ public class DashBoardPage extends JFrame {
 				String passphrase = ellipticTF.getText().toString();
 				EllipticCurveCryptography.generateKeyPair(passphrase);
 				
+				//the result texts are in EllipticCurveCryptography.generateKeyPair(passphrase);
 			}
 		});
 		
@@ -400,8 +405,9 @@ public class DashBoardPage extends JFrame {
 		                infoLabel.setText("You did not choose any file to encrypt!!");
 		            } else {
 		                EllipticCurveCryptography.encryptFile(publicKeyFileChooser, fileChooser);
-		                infoLabel.setText("Your encrypted data file under the elliptic public key file "
-		                					+ "has been saved as .CryptogramECC in your current project folder.");  
+		                infoLabel.setText("success!! Your encrypted data file under the elliptic public-key file "
+		                					+ "has been saved as .CryptogramECC in your current project folder."); 
+		                //textArea result text is in the called method above.
 		            }
 		        }
 			}
@@ -426,6 +432,7 @@ public class DashBoardPage extends JFrame {
 				} else {
 					if (fileChooser.getSelectedFile().toString().endsWith(".CryptogramECC")) {
 						EllipticCurveCryptography.decrypt(passphrase, fileChooser);
+						//infoLabel and textArea's result texts are in this called method.
 		            } else {
 		                infoLabel.setText("You did not choose the correct file type.");
 		            }
