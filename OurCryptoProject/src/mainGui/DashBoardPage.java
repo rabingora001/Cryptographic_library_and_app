@@ -21,7 +21,17 @@ import javax.swing.JTextField;
 import functions.EllipticCurveCryptography;
 import functions.KMACXOF256;
 import functions.KMACXOF256.DecryptionResult;
+import functions.SignatureManager;
 
+/**
+ * This is the main dashboard page of this project.
+ * 
+ * @author rabin gora
+ * @author Kezeba Yifat
+ * @author Aman Gedefaw
+ * @version 08/14/2020
+ *
+ */
 public class DashBoardPage extends JFrame {
 	
 	private static JFrame mainFrame;
@@ -47,6 +57,11 @@ public class DashBoardPage extends JFrame {
 	private static JLabel decryptEllipticLabel;
 	private static JTextField decryptEllipticalTF;
 	private static JButton decryptEllipticButton;
+	private static JLabel signFileLabel;
+	private static JTextField signFilePwTF;
+	private static JButton singFileButton;
+	private static JLabel verifyFileSignLabel;
+	private static JButton verifyFileSignButton;
 	
 	public static JLabel resultTabLabel;
 	public static JLabel infoLabel;
@@ -59,14 +74,14 @@ public class DashBoardPage extends JFrame {
 		//main JFrame
 		mainPanel = new JPanel();
 		mainFrame = new JFrame();
-		mainFrame.setSize(1000, 800);
+		mainFrame.setSize(1000, 630);
 		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		mainFrame.setTitle("The cryptography app!");
 		
 		//main JPanel
 		mainFrame.add(mainPanel);
 		mainPanel.setLayout(null);
-		mainPanel.setSize(1000, 800);
+		mainPanel.setSize(1000, 630);
 		
 		//main panel title label
 		titleLabel = new JLabel("Project for TCSS 487 - Rabin Gora, Aman Gedefaw, Kezeba Yifat");
@@ -93,7 +108,7 @@ public class DashBoardPage extends JFrame {
 		mainPanel.add(inputTextField);
 		//button to hash text input
 		textInputBtn = new JButton("Hash text input");
-		textInputBtn.setBounds(800, 80, 150, 25);
+		textInputBtn.setBounds(800, 80, 180, 25);
 		mainPanel.add(textInputBtn);
 		
 		//3) encrypt label
@@ -142,12 +157,12 @@ public class DashBoardPage extends JFrame {
 		mainPanel.add(encryptEllipticLabel);
 		//encrypt elliptic jbutton
 		encryptEllipticButton = new JButton("Encrypt file with public key");
-		encryptEllipticButton.setBounds(800, 200, 200, 25);
+		encryptEllipticButton.setBounds(730, 200, 250, 25);
 		mainPanel.add(encryptEllipticButton);
 		
 		//7) decrypt elliptic jlabel
-		decryptEllipticLabel = new JLabel("7) Decrypt a given elliptic-encrypted file from a given password.\n");
-		decryptEllipticLabel.setBounds(10, 230, 575,25);
+		decryptEllipticLabel = new JLabel("7) Decrypt a given elliptic-encrypted file from a given password.");
+		decryptEllipticLabel.setBounds(10, 230, 575, 25);
 		mainPanel.add(decryptEllipticLabel);
 		//decryptEllipticalTF JTextfield
 		decryptEllipticalTF = new JTextField("Enter passphrase here");
@@ -158,19 +173,39 @@ public class DashBoardPage extends JFrame {
 		decryptEllipticButton.setBounds(800, 230, 180, 25);
 		mainPanel.add(decryptEllipticButton);
 		
+		//8) sign file from pw and write a signature to a file
+		signFileLabel = new JLabel("8) Sign a fiven file from a given password and write the signature to a file.");
+		signFileLabel.setBounds(10, 260, 575, 25);
+		mainPanel.add(signFileLabel);
+		//signFile TextField
+		signFilePwTF = new JTextField("Enter password here");
+		signFilePwTF.setBounds(580, 260, 220, 25);
+		mainPanel.add(signFilePwTF);
+		//signFile button
+		singFileButton = new JButton("write signature to file");
+		singFileButton.setBounds(800, 260, 180, 25);
+		mainPanel.add(singFileButton);
 		
+		//9) verify signature Jlabel
+		verifyFileSignLabel = new JLabel("9) Verify a given data file and its signature file under a given public key file from step 3 above.");
+		verifyFileSignLabel.setBounds(10, 290, 750, 25);
+		mainPanel.add(verifyFileSignLabel);
+		//verify sign button
+		verifyFileSignButton = new JButton("verify file/sing with public-key file");
+		verifyFileSignButton.setBounds(730, 290, 250, 25);
+		mainPanel.add(verifyFileSignButton);
 		
 		
 		
 		//result label:
 		resultTabLabel = new JLabel("Result:");
-		resultTabLabel.setBounds(10, 450, 200, 25);
+		resultTabLabel.setBounds(10, 380, 200, 25);
 		resultTabLabel.setForeground(Color.blue);
 		mainPanel.add(resultTabLabel);
 		
 		//info JLable
 		infoLabel = new JLabel("");
-		infoLabel.setBounds(10, 470, 980, 25);//570
+		infoLabel.setBounds(10, 410, 980, 25);//570
 		mainPanel.add(infoLabel);
 		
 		//scroll pane. does not work for now.
@@ -179,7 +214,7 @@ public class DashBoardPage extends JFrame {
 		
 		//Main JTextField to display the results. 
 		textArea = new JTextArea();
-		textArea.setBounds(10, 500, 980, 150);
+		textArea.setBounds(10, 440, 980, 150);
 		textArea.setLineWrap(true);
 		textArea.setWrapStyleWord(true);
 		mainPanel.add(textArea);
@@ -441,7 +476,75 @@ public class DashBoardPage extends JFrame {
 		});
 		
 		
+		/*
+		 * sign file button listener
+		 */
+		singFileButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				//clear the result lines
+				clearResultLines();
+				
+				//do rest
+				String password = signFilePwTF.getText().toString();
+				infoLabel.setText("Please choose a data file");
+				
+				JFileChooser fileChooser = new JFileChooser(System.getProperty("user.dir"));
+				fileChooser.setDialogTitle("choose a data file");
+				
+		        int result = fileChooser.showOpenDialog(null);
+		        
+		        if (result == JFileChooser.CANCEL_OPTION) {
+		            infoLabel.setText("You did not select any file");
+		        } else {
+		            SignatureManager.generateSignature(password, fileChooser);
+		            //result texts are in the above called methods.
+		        }
+			}
+		});
 		
-		
+		/*
+		 * verify file signature with the public-key file from step 3.
+		 */
+		verifyFileSignButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				//clear result lines
+				clearResultLines();
+				//do rest
+				infoLabel.setText("Select a public key file you created from part 3");
+		        JFileChooser publicKeyFileChooser = new JFileChooser(System.getProperty("user.dir"));
+		        publicKeyFileChooser.setDialogTitle("Select public key file.");
+		        
+		        JFileChooser fileChooser = new JFileChooser(System.getProperty("user.dir"));
+		        JFileChooser signatureFileChooser = new JFileChooser(System.getProperty("user.dir"));
+
+		        int result = publicKeyFileChooser.showOpenDialog(null);
+		        if (result == JFileChooser.CANCEL_OPTION) {
+		            infoLabel.setText("You did not select a public key file!!");
+		        } else {
+
+		        	fileChooser.setDialogTitle("Select a data file");
+		        	infoLabel.setText("Select a data file.");
+
+		            result = fileChooser.showOpenDialog(null);
+		            if (result == JFileChooser.CANCEL_OPTION) {
+		                infoLabel.setText("You did not select a data file!!");
+		            } else {
+		            	
+		            	signatureFileChooser.setDialogTitle("select a signature file");
+		                infoLabel.setText("Select a Signature file.");
+
+		                result = signatureFileChooser.showOpenDialog(null);
+		                if (result == JFileChooser.CANCEL_OPTION) {
+		                    infoLabel.setText("You did not select a signature file!!");
+		                } else {
+		                    SignatureManager.verifySignature(publicKeyFileChooser, fileChooser, signatureFileChooser);
+		                    //result texts are inside the called methods above.
+		                }
+		            }
+		        }
+			}
+		});
 	}
 }
