@@ -209,14 +209,15 @@ public class DashBoardPage extends JFrame {
 		mainPanel.add(infoLabel);
 		
 		//scroll pane. does not work for now.
-		scrollPane = new JScrollPane(textArea);
-		this.add(scrollPane, BorderLayout.CENTER);
+//		scrollPane = new JScrollPane(textArea);
+//		mainPanel.add(scrollPane, BorderLayout.CENTER);
 		
 		//Main JTextField to display the results. 
 		textArea = new JTextArea();
 		textArea.setBounds(10, 440, 980, 150);
 		textArea.setLineWrap(true);
 		textArea.setWrapStyleWord(true);
+		textArea.setEditable(false);
 		mainPanel.add(textArea);
 		
 		
