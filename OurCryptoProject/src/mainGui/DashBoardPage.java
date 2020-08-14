@@ -187,7 +187,7 @@ public class DashBoardPage extends JFrame {
 		mainPanel.add(singFileButton);
 		
 		//9) verify signature Jlabel
-		verifyFileSignLabel = new JLabel("9) Verify a given data file and its signature file under a given public key file from step 3 above.");
+		verifyFileSignLabel = new JLabel("9) Verify a given data file and its signature file under a given public key file from step 5 above.");
 		verifyFileSignLabel.setBounds(10, 290, 750, 25);
 		mainPanel.add(verifyFileSignLabel);
 		//verify sign button
@@ -504,7 +504,7 @@ public class DashBoardPage extends JFrame {
 		});
 		
 		/*
-		 * verify file signature with the public-key file from step 3.
+		 * verify file signature with the public-key file from step 5.
 		 */
 		verifyFileSignButton.addActionListener(new ActionListener() {
 			@Override
@@ -512,7 +512,7 @@ public class DashBoardPage extends JFrame {
 				//clear result lines
 				clearResultLines();
 				//do rest
-				infoLabel.setText("Select a public key file you created from part 3");
+				infoLabel.setText("Select a public key file you created from part 5");
 		        JFileChooser publicKeyFileChooser = new JFileChooser(System.getProperty("user.dir"));
 		        publicKeyFileChooser.setDialogTitle("Select public key file.");
 		        
@@ -546,5 +546,7 @@ public class DashBoardPage extends JFrame {
 		        }
 			}
 		});
+		
+		
 	}
 }
